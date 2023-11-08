@@ -5,6 +5,8 @@ ___
 # neovim_from_source
 git clone https://github.com/neovim/neovim
 
+git checkout -b release-0.9 origin/release-0.9 
+
 sudo aptitude install gperf luajit libluajit-5.1-dev lua-mpack lua-lpeg libunibilium-dev libmsgpack-dev libtermkey-dev
 sudo aptitude install ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl
 
