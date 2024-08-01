@@ -9,7 +9,7 @@ set time-zone-autodetect=no time-zone-name=Europe/Moscow
 /system ntp client
 set enabled=yes primary-ntp=185.209.85.222 secondary-ntp=37.139.41.250
 
-2.  сертрификаты
+2.  сертификаты
     2.1. корневой:
 /certificate 
 add name=ca country="RU" state="31" locality="BEL" organization="Interface LLC" unit="IT" common-name="ca" key-size=2048 days-valid=3650 key-usage=crl-sign,key-cert-sign
@@ -95,3 +95,15 @@ auth.cfg
 
 keypass.cfg
 пароль которым закрыли архив при экспорте сертификатов
+
+#### Как подключиться другим микротиком
+
+Добавлять нужно будет сертификат и ключ. поэтому надо будет достать из p12
+openssl.exe pkcs12 -in raa-sert.p12 -nocerts -out raa-resurs.key
+openssl.exe pkcs12 -in raa-sert.p12 -clcerts -nokeys -out raa-resurs.crt
+
+1. upload to mikrotik files
+2. system-certificate - import сперва сертификат потом ключ 
+3. создать соединение VPNClient убрать маршурт по умолчанию.
+4. добавить правило NAT - outinterface = клиент VPN 
+5. добавить маршрут до бриджа внутри VPN (в данном варианте 192.168.1.1)

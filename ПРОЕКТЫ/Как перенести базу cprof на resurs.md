@@ -14,7 +14,7 @@ ___
 6. заходим на сервер ssh raa@85.202.10.174 -p 20022 -C
 7. sudo -i
 8. находим кто в базе из ноде lsof -i | grep node 
-9. тормозим приложение в root@deb11:~/nodeapp/hellowords/firebird_test/src
+9. тормозим приложение в root@deb11:~/nodeapp/hellowords/sshfirebird_test/src
 10. запускаем в папке /mnt/backup/bin cprof_restore.sh*
 11. запускаем обратно root@deb11:~/nodeapp/hellowords/firebird_test/src# node index.js 
 ___

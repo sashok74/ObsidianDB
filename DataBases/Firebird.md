@@ -1,4 +1,4 @@
-### fb4 
+### fb
 
 инструкция установки из исходников:
 git clone https://github.com/FirebirdSQL/firebird.git
@@ -6,6 +6,30 @@ aptitude install libtool libicu-dev libtommath-dev libtomcrypt-dev libncurses5-d
 
 
 https://github.com/FirebirdSQL/firebird.git
+
+установка.
+
+если не работаю свои udf то проверить зависимости с помощью
+```bash
+root@planar8:/opt/firebird/UDF# ldd rfunc.so
+        linux-vdso.so.1 (0x00007fff03ff8000)
+        libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007fe3959ff000)
+        libib_util.so => not found
+        libfbclient.so.2 => not found
+        libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fe39581e000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007fe395af9000)
+```
+
+если не запускается 2.5 то помнить, что его запускает xinetd
+а он может быть не установлен. установить и проверить конфиг.
+```bash
+systemctl status xinetd.service
+nano /etc/inetd.conf
+```
+в нано видим:
+```nano
+gds_db  stream  tcp     nowait      firebird /opt/firebird/bin/fb_inet_server fb_inet_server
+```
 ### isql
  connect security.db user SYSDBA;
  CREATE USER SYSDBA PASSWORD 'm8ku234pp';
