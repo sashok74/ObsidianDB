@@ -50,7 +50,14 @@ find / -not \( -path '/sys*' -o -path '/mnt*' \) -name '*bash*' -exec grep -H 't
 find / -xdev -type f -size +50M -exec ls -lSh {} \;
    ```
 
+- дерево файлов на глубину 3 исключая файлы и папки по фильтру
+```bash
+tree -L 3 -I '*.cmake|*.sh|*.log|*.json|build'
+```
+
+
   Для вывода списка файлов с содержанием (значения переменных) слева для интерфейса `ens18`, вы можете использовать следующую команду:
+
 
 ```bash
 Для вывода списка файлов с содержанием (значения переменных) слева для интерфейса `ens18`, вы можете использовать следующую команду:
@@ -235,16 +242,60 @@ systemctl -t slice
 systemd-cgtop
 
 ### lvm 
+### Увеличить один том за счет другого
+### **1. Проверить текущее состояние LVM**
 
-1. Меняем размер home 
-    cd /
-	sudo umount -fl /home
-	sudo e2fsck -f /dev/mapper/resurs--vg-home
-	sudo resize2fs /dev/mapper/resurs--vg-home 500G
-	sudo lvreduce -L 500G /dev/mapper/resurs--vg-home
-	sudo mount /home/
+```bash
+sudo vgs 
+sudo lvs 
+sudo df -h
+```
+
+Убедись, что `/home` (`resurs--vg-home`) и `/srv/common` (`resurs--vg-common`) принадлежат одной **Volume Group (VG)** — `resurs--vg`.
+
+### **2. Уменьшить `resurs--vg-home`**
+
+⚠ **Важно! Перед изменением размеров логического тома размонтируй его и сделай резервную копию!**
+
+```bash
+sudo umount /home
+sudo e2fsck -f /dev/mapper/resurs--vg-home
+sudo resize2fs /dev/mapper/resurs--vg-home 400G  # Уменьши размер ФС
+sudo lvreduce -L 400G /dev/mapper/resurs--vg-home
+```
+
+
+
+### **3. Расширить `resurs--vg-common`**
+#### **3.1 проверить файловую систему**
+```bash
+sudo blkid /dev/mapper/resurs--vg-common
+```
+
+```bash
+sudo lvextend -L +90G /dev/mapper/resurs--vg-common
+sudo resize2fs /dev/mapper/resurs--vg-common
+```
+#### **3.2 Если файловая система **XFS**, используй:**
+
+```bash
+sudo xfs_growfs /srv/common
+```
+
+### **4. Перемонтировать `/home`**
+
+```bash
+sudo mount /home
+```
+
+### **5. Проверить результат**
+
+```bash
+df -h 
+lvs
+```
 	
-2. Создаем диск lvm	
+9. Создаем диск lvm	
 	sudo lvcreate -n common -L120G resurs-vg
 	sudo mkfs.xfs -L common /dev/resurs-vg/common
     mkdir /srv/common
@@ -260,13 +311,13 @@ systemd-cgtop
 		pvmove --alloc anywhere /dev/sda5:24482-25509 /dev/sda:21457-22484	--перемещаем превый участок во второй
 		pvmove --alloc anywhere /dev/sda5:24482+1000 /dev/sda:21457+1000	--тоже ну с указанием размера.
 ### ZFS
-1. создать пул:
-2. Создать valuem (блочное устройство в пуле ) :  10 гиг в пуле big-data и создаем файловую систему ext4
+10. создать пул:
+11. Создать valuem (блочное устройство в пуле ) :  10 гиг в пуле big-data и создаем файловую систему ext4
    ```bash
    zfs create -V 10G big-data/heap
    mkfs.ext4 /dev/zvol/big-data/heap
    ```
-3. создать файловую систему. 
+12. создать файловую систему. 
 	1. ограничить ее по объему
 	2. задать новую точку монтирования
 	3. расшарить для nfs
@@ -279,7 +330,7 @@ systemd-cgtop
    zfs set sharenfs='rw,no_root_squash' big-data/download
    ```
 
-5.  Просмотр:
+13.  Просмотр:
    ```bash
    zfs list
    zfs get guid  big-data/heap

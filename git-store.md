@@ -1,5 +1,8 @@
-выбираем тип хранилища - файл (можно кеш и всякое другое)
-git config --global credential.helper store  
+выбираем тип хранилища - файл (можно кэш и всякое другое)
+```bash
+config --global credential.helper store  
+nano ~/.git-credentials
+```
 
 по умолчанию все пишется в файл: ~/.git-credentials
 
@@ -15,6 +18,17 @@ password=s3cre7
 $ git credential fill (5)
 protocol=https
 host=unknownhost
+3. **Добавить запись с токеном**:
+   Запишите строку следующего формата:
+   ```
+   https://<username>:<access_token>@github.com
+   ```
+
+   Пример:
+   ```
+   https://myusername:ghp_abcd1234yourAccessTokenHere@github.com
+   ```
+
 
 
 
