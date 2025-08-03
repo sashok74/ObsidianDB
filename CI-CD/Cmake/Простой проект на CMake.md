@@ -599,19 +599,24 @@ Build and deployment - Выставляем Deploy from branch
 ветка  gh-pages/root
 
 #### 11.7 готовим ветку для ревью
+удалим лишние ветки
+```bash
+git branch -D branch-name
+```
 
 ```bash
-git checkout –b remove_all
+git checkout -b remove_all 
 ```
 Если нужно только часть файлов показать то я сперва удалили  всё ненужное
 закомитил, а потом уже удалил нужное, которое восстановится в ветке ревью.
+
 ```bash
 rm -rf allocators ci-cd ip_filter sfinae
 git add -A
 git commit -m 'удалил ненужное'
 rm –rf *
 git add .
-git commit –m “remove all files for review”
+git commit –m 'remove all files for review'
 git checkout –b review1
 git log –-oneline
 ---  a6a905d (HEAD -> review1, remove_all) Remove all files for review.

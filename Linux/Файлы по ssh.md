@@ -34,6 +34,7 @@ chmod 600 /root/.ssh/id_rsa
    scp root@5.8.63.135:/etc/tmux.conf /etc/
    
 ```
+pass LVhAs!GwQhn$cmyW
 Применим конфиг.
 
 ``` bash
